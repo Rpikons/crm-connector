@@ -57,7 +57,7 @@
 
             try {
                 // Usiamo l'URL assoluto per evitare ambiguità
-                const response = await fetch('http://localhost:3000/api/lead', {
+                const response = await fetch('/api/lead', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -83,4 +83,5 @@
         });
     </script>
 </body>
+
 </html>
