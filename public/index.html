@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Generator Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white font-sans">
+    <div class="max-w-4xl mx-auto px-6 py-16 text-center">
+        <h1 class="text-5xl font-extrabold mb-4 bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+            Preventivo Istantaneo
+        </h1>
+        <p class="text-slate-400 text-xl mb-10">Inserisci i tuoi dati per essere ricontattato.</p>
+
+        <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 text-left max-w-md mx-auto">
+            <form id="leadForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Nome Completo</label>
+                    <input type="text" id="nome" placeholder="Mario Rossi" required class="w-full p-3 rounded bg-slate-700 border border-slate-600 focus:border-blue-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Email</label>
+                    <input type="email" id="email" placeholder="mario@esempio.it" required class="w-full p-3 rounded bg-slate-700 border border-slate-600 focus:border-blue-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Budget Stimato</label>
+                    <select id="rispostaQuiz" class="w-full p-3 rounded bg-slate-700 border border-slate-600 focus:border-blue-500 outline-none transition text-white">
+                        <option value="500-1000">500€ - 1000€</option>
+                        <option value="1000-5000">1000€ - 5000€</option>
+                        <option value="5000+">Oltre 5000€</option>
+                    </select>
+                </div>
+                <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition transform hover:scale-105">
+                    Invia Richiesta 🚀
+                </button>
+            </form>
+            <p id="status" class="mt-4 text-center text-sm font-semibold"></p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('leadForm');
+        const statusMsg = document.getElementById('status');
+        const btn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            statusMsg.innerText = "⏳ Invio in corso...";
+            btn.disabled = true;
+
+            const data = {
+                nome: document.getElementById('nome').value,
+                email: document.getElementById('email').value,
+                rispostaQuiz: document.getElementById('rispostaQuiz').value
+            };
+
+            try {
+                // Usiamo l'URL assoluto per evitare ambiguità
+                const response = await fetch('http://localhost:3000/api/lead', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    statusMsg.className = "mt-4 text-center text-sm font-semibold text-emerald-400";
+                    statusMsg.innerText = "✅ Lead inviato con successo!";
+                    form.reset();
+                } else {
+                    statusMsg.className = "mt-4 text-center text-sm font-semibold text-red-400";
+                    statusMsg.innerText = "❌ Errore Server: " + result.message;
+                }
+            } catch (err) {
+                console.error("ERRORE DETTAGLIATO:", err);
+                statusMsg.className = "mt-4 text-center text-sm font-semibold text-red-400";
+                statusMsg.innerText = "❌ Errore di connessione. Controlla la console (F12).";
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
