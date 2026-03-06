@@ -40,3 +40,4 @@ app.post('/api/lead', async (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`🚀 Server pronto su http://localhost:${PORT}`));
+
